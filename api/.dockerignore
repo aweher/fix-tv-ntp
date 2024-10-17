@@ -1,0 +1,10 @@
+Makefile
+README.md
+LICENSE
+Dockerfile
+docker-compose.yml
+build.sh
+.gitignore
+.git/
+.dockerignore
+.vscode/

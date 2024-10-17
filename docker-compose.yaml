@@ -1,0 +1,30 @@
+---
+services:
+  api:
+    build: ./api
+    ports:
+      - "80:9800"
+    environment:
+      - FLASK_ENV=production
+    restart: unless-stopped
+    
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  ntp:
+    build: ./ntp
+    environment:
+      - NTP_SERVERS=time.cloudflare.com
+      - LOG_LEVEL=0
+    ports:
+      - "123:123/udp"
+    restart: unless-stopped
+
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
