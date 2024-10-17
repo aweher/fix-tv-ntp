@@ -33,9 +33,10 @@ curl -L get.docker.com | bash
 Descargar el archivo `docker-compose.yml`:
 
 ```bash
-mkdir -p /opt/ayuda.la/fix-tv-ntp/
-cd /opt/ayuda.la/fix-tv-ntp/
-apt install -y wget && wget https://raw.githubusercontent.com/aweher/fix-tv-ntp/refs/heads/main/docker-compose.yaml
+mkdir -p /opt/ayuda.la
+cd /opt/ayuda.la
+git clone https://github.com/aweher/fix-tv-ntp.git
+cd fix-tv-ntp
 docker compose up --build -d
 ```
 
