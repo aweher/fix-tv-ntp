@@ -7,33 +7,12 @@
 import logging
 import time
 import threading
-import ntplib
 from flask import Flask, jsonify, request
 
 app = Flask(__name__)
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
-
-ntp_client = ntplib.NTPClient()
-ntp_server = 'pool.ntp.org'
-current_time = int(time.time() * 1000)
-
-def sync_time():
-    """
-    Sincroniza continuamente la hora actual via NTP.
-    """
-
-    global current_time
-
-    while True:
-        try:
-            response = ntp_client.request(ntp_server, version=3)
-            current_time = int(response.tx_time * 1000)
-            logger.info("Hora sincronizada con éxito.")
-        except Exception as e:
-            logger.error(f"Error al sincronizar la hora: {e}")
-        time.sleep(3600)
 
 @app.route('/')
 def home():
@@ -43,7 +22,7 @@ def home():
 
     response = {
         "retCode": "0",
-        "time": current_time,
+        "time": int(time.time() * 1000),
         "ips": ["synctime.hismarttv.com"]
     }
     return jsonify(response)
@@ -76,5 +55,4 @@ def log_request_info():
 
 if __name__ == '__main__':
     logger.info("Iniciando la aplicación.")
-    threading.Thread(target=sync_time, daemon=True).start()
     app.run(debug=True)

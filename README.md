@@ -2,25 +2,22 @@
 
 ## Problema
 
-Algunos modelos de televisores Hisense (o algunas otras marcas que usan componentes Hisense) no pueden conectarse al servidor NTP para sincronizar la fecha y la hora.
+Algunos modelos de televisores Hisense (o algunas otras marcas que usan componentes Hisense) no pueden conectarse al servidor API de la marca para sincronizar la fecha y la hora.
 
-Estos televisores no tienen la opción de configurar manualmente la fecha y la hora, por lo que es necesario que se conecten al servidor NTP para obtener la fecha y la hora correcta, de lo contrario, no podrán acceder a ciertas aplicaciones, como por ejemplo YouTube.
+Estos televisores no tienen la opción de configurar manualmente la fecha y la hora, por lo que es necesario que se conecten al servidor API para obtener la fecha y la hora correcta, de lo contrario, no podrán acceder a ciertas aplicaciones, como por ejemplo YouTube.
 
 ## Parche propuesto
 
-La solución es configurar un servidor NTP local en la red local, y configurar el televisor para que se conecte a este servidor NTP local.
+La solución es simular un servidor API en la red local, y configurar algún truco en la red para que el televisor se conecte a este servidor local en vez de utilizar el real del fabricante.
 
 Esto involucra tener que redirigir tráfico y/o envenenar los servidores DNS locales para que mientan acerca de las URL que los televisores utilizan para obtener la fecha y la hora. Si bien esto puede ser considerado como un accionar no ético y que afecta la neutralidad de la red, es la única solución que se ha encontrado hasta el momento para que los clientes que compraron esos televisores puedan usar los servicios web. En el momento que el fabricante normalice sus servicios, este parche debería ser desinstalado.
 
-### Configurar un servidor NTP y Web local
+### Configurar Web local
 
 #### Aviso en relación al equipo donde se ejecuta esto
 
 > Estos comandos consideran que se está utilizando un sistema operativo basado en Debian, como por ejemplo Ubuntu. Y que el sistema operativo está recién instalado, sin configuraciones adicionales. Si se está utilizando otro sistema operativo, o si ya se han realizado configuraciones adicionales, es posible que estos comandos no funcionen o generen problemas en el sistema operativo.
-
-#### Aviso de seguridad MUY IMPORTANTE
-
-> *El servidor NTP necesita firewall* para que no se acceda desde todo el mundo. Si no se configura un firewall, se puede convertir en un servidor NTP abierto, lo que puede ser utilizado para realizar ataques de denegación de servicio distribuido (DDoS). [Ver este caso](https://www.lacnic.net/innovaportal/file/4016/1/fukuoka-university-public-ntp-service-deployment-use-case.pdf).
+> El puerto 80 debe estar disponible en el sistema operativo.
 
 #### Paso 1: Instalar Docker
 
@@ -54,16 +51,21 @@ Ejemplo de Unbound
 [...]
 ```
 
-### Actualizar
+### ¿Cómo actualizar?
 
 ```bash
+cd /opt/ayuda.la/fix-tv-ntp
+
+git stash #solo si se hicieron cambios manuales en algun archivo
+
 git pull
 docker compose down
 docker compose up --build -d
 ```
 
-### Desinstalar
+### ¿Cómo desinstalar?
 
 ```bash
+cd /opt/ayuda.la/fix-tv-ntp
 docker compose down -v
 ```
